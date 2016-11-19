@@ -5,6 +5,9 @@
 #include "environment.h"
 #include "strings.h"
 
+/**
+ * @return New record with memory assigned to it
+ */
 record* initialiseNewRecord() {
   record *newRecord = (record*)calloc(1, sizeof(record));
   newRecord->name = (char *)calloc(INIT_BUFF, sizeof(char));
@@ -13,7 +16,7 @@ record* initialiseNewRecord() {
 }
 
 /**
- * Checks if a particular record exists,
+ * Checks if a particular record exists (named `name`),
  * if it does then it returns it.
  * Otherwise returns NULL.
  */
@@ -28,6 +31,11 @@ record* lookupRecord(char *name) {
   return NULL;
 }
 
+/**
+ * Adds a new variable to the records global var
+ * @param name  Name of the record (e.g. "HOME")
+ * @param value Value of the record (e.g. "/usr/...")
+ */
 void addNewEntryToRecords(char *name, char *value) {
   int i = 0;
   while(records[i]) {
@@ -41,8 +49,8 @@ void addNewEntryToRecords(char *name, char *value) {
 /**
  * Checks if an entry exists. If it does, it updates it.
  * Otherwise it adds a new entry.
- * @param name  [description]
- * @param value [description]
+ * @param name  Name of the record (e.g. "HOME")
+ * @param value Value of the record (e.g. "/usr/...")
  */
 void addEntryToRecords(char *name, char *value) {
   record *tempRecord = lookupRecord(name);
@@ -55,7 +63,8 @@ void addEntryToRecords(char *name, char *value) {
 
 /**
  * Processes a line and then either updates the
- * PATH, HOME or the records
+ * PATH, HOME or the records variables
+ * @param line A single line (without the '\n') in the profile file
  */
 void processLine(char *line) {
   if(!strlen(line)) return; // Empty lines in file
@@ -63,6 +72,8 @@ void processLine(char *line) {
   char **parts = parseLineDelimiter(line, '=');
   if(parts[0] == NULL || parts[1] == NULL) {
     fprintf(stderr, "Each line must be in the format: NAME=VALUE\n");
+    free(parts);
+    return;
   }
 
   if(!strcmp(parts[0], "PATH")) {
@@ -79,7 +90,7 @@ void processLine(char *line) {
 /**
  * Parses the file line-by-line
  * Then for every line, it stores the variable.
- * @param file [description]
+ * @param file A file handler for the profile file
  */
 void parseFile(FILE *file) {
   char buff[INIT_BUFF];
@@ -130,6 +141,7 @@ void freeRecords() {
 /**
  * HOME and PATH need to be assigned in profile
  * Otherwise, report an error
+ * @return A boolean value that is true if not error occured and false otherwise
  */
 int checkIfHomeAndPathExist() {
   if(HOME != NULL && PATH != NULL) {
@@ -163,6 +175,26 @@ int initEnvironment() {
   fprintf(stderr, "Could not open profile file\n");
   free(HOME); freeRecords();
   return 0;
+}
+
+void printPath() {
+  printf("PATH=");
+  node *currentNode = PATH;
+  do {
+      printf("%s:", currentNode->path);
+      currentNode = currentNode->next;
+  } while(currentNode->next);
+  printf("%s\n", currentNode->path);
+}
+
+void printEnv() {
+  printf("HOME=%s\n", HOME);
+  printPath();
+  int i = 0;
+  while(records[i]) {
+      printf("%s=%s\n", records[i]->name, records[i]->value);
+      i++;
+  }
 }
 
 void cleanupEnvironment() {

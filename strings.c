@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include "strings.h"
 
+// Ironically, the escape char needs to be escaped
 #define ESCAPECHAR '\\'
+
 
 /**
  * Used to see if the current character is escaped
@@ -14,6 +16,9 @@ typedef struct escape {
   bool quote;
 } escape;
 
+/**
+ * Initialises and assigns memory for a new escape instance
+ */
 escape* initialiseEscape() {
   escape *esc = (escape*)malloc(sizeof(escape));
   esc->isEscaped = false;
@@ -43,6 +48,9 @@ void freeLines(char **lines) {
 /**
  * If the memory allocated for line is not enough,
  * it doubles it.
+ * @param line The variable holding the string
+ * @param currentChar Where in the string we are appending right now
+ * @param size current size of the line variable
  */
 char* doubleStringLength(char* line, int currentChar, int size) {
   if(size - 1 == currentChar) {
@@ -58,7 +66,8 @@ char* doubleStringLength(char* line, int currentChar, int size) {
  * Makes sure that we do not leave any empty strings
  * in the parseLineDelimiter results.
  * For instance if we have "cd ", we do not want to have
- * ["cd", " "];
+ * ["cd", ""];
+ * @return a boolean value that shows whether `result[currentSplit]` was ""
  */
 bool isEmptyString(char **result, int currentSplit) {
   if(!strcmp(result[currentSplit], "")) {
@@ -73,9 +82,7 @@ bool isEmptyString(char **result, int currentSplit) {
  * Adds a new character to result, based on the current
  * state. It checks whether a character has been escaped
  * or whether you are in a string.
- * @return A boolean value that is true,
- * if a new character has been added to the string
- * and false otherwise.
+ * @return A boolean value that shows if a new character has been added to the string
  */
 bool addChar(char **result, int currentSplit, int currentChar, char linei, escape *esc) {
   if(esc->isEscaped) {

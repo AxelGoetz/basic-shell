@@ -8,7 +8,6 @@
 #define MAX_INPUT 1024
 
 int main() {
-  printf("Welcome to the Axel Shell\n");
   if(!initEnvironment()) {
     fprintf(stderr, "Intialisation failed...\n");
     return 0;
@@ -20,7 +19,7 @@ int main() {
   do {
     char cwd[INIT_BUFF];
     getcwd(cwd, sizeof(cwd));
-    printf("%s > ", cwd);
+    printf("%s>", cwd);
     if (fgets(line, sizeof(line), stdin)) {
       strtok(line, "\n");
       args = parseLineDelimiter(line, ' ');

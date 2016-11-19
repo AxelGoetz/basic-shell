@@ -12,6 +12,9 @@
 #define PATH_SEPARATOR ':'
 #define DIR_SEPARATOR '/'
 
+/**
+ * @return A new linked list node with memory assigned for it
+ */
 node *initialiseNewNode() {
   node *newNode = (node *)calloc(1, sizeof(node));
   newNode->path = (char *)calloc(INIT_BUFF, sizeof(char));
@@ -28,6 +31,8 @@ void printLinkedList(node *list) {
 /**
  * Stores the paths in a linked list.
  * Assuming that they do not contain any spaces.
+ * @param paths a list with all of the paths (seperated by PATH_SEPARATOR)
+ * @return the first node of a linked list where each node is one path to search
  */
 node * storePath(char *paths) {
   char** path = parseLineDelimiter(paths, PATH_SEPARATOR);
@@ -60,6 +65,7 @@ void freeLinkedList(node *list) {
 
 /**
  * Returns a string with the full path of the program
+ * @return A new string where path is appended to the program string
  */
 char * getProgramPath(char *path, char *program) {
   int pathLen = strlen(path), programLen = strlen(program);
@@ -79,8 +85,9 @@ char * getProgramPath(char *path, char *program) {
 
 /**
  * Looks for a program in the directories specified in PATH.
- * Returns the full path of the program if it exists.
- * Else returns NULL.
+ * @param program the program name
+ * @param list Linked list with all of the paths to look in
+ * @return the full path of the program if it existt else NULL.
  */
 char * lookForProgram(char *program, node *list) {
   DIR *dir;

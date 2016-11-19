@@ -14,3 +14,4 @@ record **records;
 void processLine(char *line);
 void cleanupEnvironment();
 int initEnvironment();
+void printEnv();
