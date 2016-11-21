@@ -7,6 +7,9 @@ A very limited shell that supports:
 - Spacing and escape characters (`cd "my directory"` or `cd my\ directory`)
 - Quit the shell (`exit`)
 
+To run the shell, first change the `profile` file such that it contains the appropriate `HOME` and `PATH` variables.
+Then run `make` to compile and finally to actually run `./main` to run the shell.
+
 ## Project Structure
 ```
 .
